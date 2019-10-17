@@ -1,0 +1,104 @@
+#%RAML 1.0
+---
+title: Positions API
+baseUri: http://example.com/{version}
+version: v1
+
+# Base types
+types:
+  Skill:
+    type: string
+
+  Company:
+    type: object
+    properties: 
+      size: 
+        enum: [min, max]
+      domain: string
+
+  Position:
+    type: object
+    properties:
+      id: number
+      job_title: string
+      seniority_level: string
+      country: string
+      city: string
+      salary: number
+      currency: string
+      required_skills: Skill[]
+      company: Company
+
+# Endpoints
+/positions:
+  get:
+    queryParameters:
+      country:
+        type: string
+        description: Country code
+        example: DE
+        required: false
+      city:
+        type: string
+        description: Name of the city
+        example: Berlin
+        required: false
+      sort:
+        type: 
+          enum:
+            - seniority_level
+            - salary
+        description: Apply asceding sort by field
+        required: false
+
+    responses:
+      200:
+        body:
+          application/json:
+            type: Position[]
+      404:
+        body:
+          application/json:
+            description: No positions found for this criteria
+            example: |
+              { "description": "Positions for the criteria not found" }
+  
+  /most_interesting
+    get:
+      queryParameters:
+        skills:
+          type: array
+          description: List of skills for search
+          example: PHP,LAMP,SQL
+          required: true
+      responses:
+        200:
+          body:
+            application/json:
+              type: Position[]
+        400:
+          body:
+            application/json:
+              description: Missed "skills" query parameter
+              example: |
+                { "description": "Please provide one or more skills to retrieve positions" }
+        404:
+          body:
+            application/json:
+              description: No positions found for this skills
+              example: |
+                { "description": "Position with ID = {id} not found" }
+  
+  /{id}
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: Position
+        404:
+          body:
+          application/json:
+            description: No position found with this ID
+            example: |
+              { "description": "Position with ID = {id} not found" }

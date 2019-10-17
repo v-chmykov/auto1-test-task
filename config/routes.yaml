@@ -1,0 +1,20 @@
+sum:
+    path: /sum/{a}/{b}
+    controller: App\Controller\SumController::sumAction
+
+position_list:
+    path: /v1/positions
+    controller: App\Controller\PositionsController::listAction
+    methods: [GET]
+
+position_details:
+    path: /v1/positions/{id}
+    controller: App\Controller\PositionsController::detailsAction
+    methods: [GET]
+    requirements:
+        id: '\d+'
+
+most_interesting_positions:
+    path: /v1/positions/most_interesting
+    controller: App\Controller\PositionsController::mostInterestingAction
+    methods: [GET]
